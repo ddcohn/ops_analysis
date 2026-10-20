@@ -168,15 +168,15 @@ def match_well( plate_num, well_num, out_tag, NUM_PROCESSES, list_of_files_40x,
                 if best_image_match_10x.startswith('SSD'):
                     best_image_match_10x = line.split()[-9] + ' ' + line.split()[-8]
                 best_image_match_10x = best_image_match_10x.replace( '//','/')
-                best_cc_mag = float(line.split()[-7])
-                shift_x = float( line.split()[-6])
-                shift_y = float( line.split()[-5])
+                best_cc_mag = float(line.split()[-3])
+                shift_x = float( line.split()[-2])
+                shift_y = float( line.split()[-1])
                 best_shift = np.array([shift_x,shift_y])
-                expected_x = float( line.split()[-4] )
-                expected_y = float( line.split()[-3] )
-                actual_x = float( line.split()[-2] )
-                actual_y = float( line.split()[-1] )
-                dist_actual_expected = math.dist( [expected_x, expected_y], [actual_x, actual_y] )
+                expected_x = 0.0  # Not available in 4-field format
+                expected_y = 0.0  # Not available in 4-field format
+                actual_x = 0.0  # Not available in 4-field format
+                actual_y = 0.0  # Not available in 4-field format
+            dist_actual_expected = 0.0  # Not calculated for 4-field format
             #print( base_fname, dist_actual_expected, best_cc_mag )
             if (best_cc_mag < THRESHOLD_CC_MATCH) or (dist_actual_expected > DIST_THRESHOLD_MATCH):
                 continue

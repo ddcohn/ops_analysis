@@ -173,4 +173,4 @@ if __name__ == '__main__':
     phenotype_well( args.plate_num, args.well_num, args.out_tag,
                 args.output_tif_40x_base_dir, args.list_dapi_files, 
                 args.check_for_match_file, args.match_dir, args.num_proc, 
-                args.ffc_file_dapi, args.ffc_file_gfp, do_ffc, nuclei_masks_dir )
+                args.ffc_file_dapi, args.ffc_file_gfp, do_ffc, args.nuclei_masks_dir )

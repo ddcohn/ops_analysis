@@ -82,8 +82,8 @@ def get_best_10x_image_match( file_40x, list_of_files_10x, scale_factor, overlap
 
     # rescale the image -- only the DAPI channel
     image_10x_0 = read( list_of_files_10x[0] )
-    image_size_10x = np.shape( image_10x_0[0] )[0]
-    padded_image_40x_rescaled, _ = rescale_40x_to_10x_and_pad( image_40x_max_proj[0], 
+    image_size_10x = np.shape( image_10x_0[0][0] )[0]
+    padded_image_40x_rescaled, _ = rescale_40x_to_10x_and_pad( image_40x_max_proj if image_40x_max_proj.ndim == 2 else image_40x_max_proj[0], 
                                                             scale_factor, image_size_10x )
     
     # create 40x image mask (only want to align the actual image -- not the pad)
@@ -98,13 +98,13 @@ def get_best_10x_image_match( file_40x, list_of_files_10x, scale_factor, overlap
         image_10x = read( file_10x )
         
         # create 10x image mask (does not mask anything out, full image is valid)
-        src_mask = np.ones( np.shape(image_10x[0]), dtype=bool)
+        src_mask = np.ones( np.shape(image_10x[0][0]), dtype=bool)
         
         # get the masked correlation - use DAPI only
         # this code is essentially equivalent to masked_register_translation
         # but I want it to return the cross correlation and don't want to compute twice
         # so need to write out here
-        shift, cc = masked_register_translation_return_CC( image_10x[0], 
+        shift, cc = masked_register_translation_return_CC( image_10x[0][0], 
                                                           padded_image_40x_rescaled, src_mask, target_mask,
                                                          overlap_ratio=overlap_ratio)
                                                          #overlap_ratio=10/10)
@@ -121,7 +121,7 @@ def get_best_10x_image_match( file_40x, list_of_files_10x, scale_factor, overlap
     # write to a file
     base_fname = file_40x.split('/')[-1].split('.tif')[0]
     #with open( 'match_files_0.25/match_{name}.txt'.format(name=base_fname), 'w') as f:
-    with open( 'match_files_0.5/match_{name}.txt'.format(name=base_fname), 'w') as f:
+    with open( 'match_files/match_{name}.txt'.format(name=base_fname), 'w') as f:
     #with open( 'match_files/match_{name}.txt'.format(name=base_fname), 'w') as f:
         f.write( '{image} {cc_mag} {shift_x} {shift_y}\n'.format(image=best_image_match, cc_mag=best_max_cc_mag, shift_x=best_shift[0], shift_y=best_shift[1] ))
     
@@ -1013,7 +1013,7 @@ def get_condensates_general_explicit( image,
         #dark_thresh = filters.threshold_li( inverted_image, initial_guess=-1.)
         dark_thresh = filters.threshold_li( inverted_image, initial_guess=-1.,tolerance=0.5)
     except:
-        print( "error with threshold li", flush=True )
+        print( "error with threshold li" )
         print( "save file name:", save_file )
         print( np.min( inverted_image), np.max(inverted_image) )
         dark_thresh = filters.threshold_li( inverted_image, initial_guess=np.max(inverted_image)-0.5)
@@ -2205,7 +2205,7 @@ def prelim_phenotype_phenix_2channel_write_img_files( fname_dapi, fname_gfp,
     dapi_image = read( fname_dapi )
     gfp_image = read( fname_gfp )
 
-    print( fname_dapi, flush=True )
+    print( fname_dapi )
 
     #save( f'preffc_dapi_well{well_num}_field{tile_num}.tif', dapi_image )
     #save( f'preffc_gfp_well{well_num}_field{tile_num}.tif', gfp_image )

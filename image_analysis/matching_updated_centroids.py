@@ -170,8 +170,12 @@ def get_10x_coords_from_40x_coords( x40x, y40x, linregress_model ):
     return x10x, y10x
 
 def get_field_num_from_phenix_name( name ):
+    # Handle Well_Pos format (e.g., Well16_Pos042-ch1.tif)
+    if "Pos" in name:
+        field_num = name.split('Pos')[1].split('-')[0]
+        return int(field_num)
+    # Handle Phenix formats
     if "max" in name:
-        #print( "name", name )
         field_num = name.split('/')[-1].split('-')[0].split('f')[1].split('max')[0]
     elif "mean" in name:
         field_num = name.split('/')[-1].split('-')[0].split('f')[1].split('mean')[0]
